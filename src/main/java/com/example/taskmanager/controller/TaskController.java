@@ -1,55 +1,64 @@
 package com.example.taskmanager.controller;
 
+import com.example.taskmanager.model.Task;
+import com.example.taskmanager.repository.TaskRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/tasks")
 public class TaskController {
+    private final TaskRepository repo;
 
-    @GetMapping("/hello")
-    public String hello(){
-        return "Task Manager API running! Part 2";
+    public TaskController(TaskRepository repo){
+        this.repo = repo;
     }
 
-    @GetMapping("/greet/{name}")
-    public String greet(@PathVariable String name){
-        return "Hello " + name;
-    }
-
-    @GetMapping("/sum")
-    public int sum(@RequestParam int a, @RequestParam int b){
-        return a + b;
-    }
-
-    private List<Task> tasks = new ArrayList<>();
-
-    @PostMapping("/tasks")
+    @PostMapping("")
     public Task addTask(@RequestBody Task task){
-        tasks.add(task);
-        return task;
+        return repo.save(task);
     }
 
-    @GetMapping("/tasks")
+    @GetMapping("")
     public List<Task> getTasks(){
-        return tasks;
+        return repo.findAll();
     }
 
-    @DeleteMapping("tasks/{id}")
+    @DeleteMapping("{id}")
     public void deleteTask(@PathVariable int id){
-        tasks.removeIf(task -> task.getId() == id);
+        repo.deleteById(id);
     }
 
-    @PutMapping("tasks/{id}")
+    @PutMapping("/{id}")
     public Task UpdateTask(@PathVariable int id, @RequestBody Task updatedTask){
-        for (Task task : tasks){
-            if (task.getId() == id){
-                task.setTitle(updatedTask.getTitle());
-                return task;
-            }
+        Task task = repo.findById(id).orElse(null);
+        if (task != null){
+            return repo.save(updatedTask);
         }
 
         return null;
+    }
+
+    @PutMapping("/{id}/complete")
+    public Task markComplete(@PathVariable int id){
+        Task task = repo.findById(id).orElse(null);
+        if (task != null){
+            task.setCompleted(true);
+            return repo.save(task);
+        }
+
+        return null;
+    }
+
+    @GetMapping("/completed")
+    public List<Task> getCompleted(){
+        return repo.findAll().stream().filter(Task:: isCompleted).toList();
+    }
+
+    @GetMapping("/incomplete")
+    public List<Task> getIncomplete(){
+        return repo.findAll().stream().filter(Task -> !Task.isCompleted()).toList();
     }
 }

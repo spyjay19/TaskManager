@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Task Manager</title>
 </head>
 <body>
 <h1>Task Manager</h1>
+<button id = "RefreshTaskButton">Refresh Tasks</button>
 <ul id="taskList"></ul>
 
 <script>
@@ -21,6 +22,12 @@
     }
 
     fetchTasks();
+
+    const RefreshButton = document.getElementById('RefreshTaskButton')
+
+    RefreshButton.addEventListener('click', function (){
+        fetchTasks();
+    });
 </script>
 </body>
 </html>
