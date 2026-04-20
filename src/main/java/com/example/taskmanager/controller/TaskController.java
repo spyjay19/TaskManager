@@ -6,7 +6,6 @@ import com.example.taskmanager.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -44,6 +43,7 @@ public class TaskController {
         return service.GetTaskByID(id)
                 .map(task -> {
                     task.setTitle(updatedTask.getTitle());
+                    task.setDescription(updatedTask.getDescription());
                     task.setCompleted(updatedTask.isCompleted());
                     return ResponseEntity.ok(service.Save(task));
                 })
@@ -56,6 +56,18 @@ public class TaskController {
         return service.GetTaskByID(id)
                 .map(task -> {
                     task.setCompleted(true);
+                    return ResponseEntity.ok(service.Save(task));
+                })
+
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/incomplete")
+    public ResponseEntity<Task> markIncomplete(@PathVariable int id){
+
+        return service.GetTaskByID(id)
+                .map(task -> {
+                    task.setCompleted(false);
                     return ResponseEntity.ok(service.Save(task));
                 })
 
