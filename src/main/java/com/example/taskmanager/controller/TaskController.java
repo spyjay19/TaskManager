@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/tasks")
@@ -37,17 +38,23 @@ public class TaskController {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Task> UpdateTask(@PathVariable int id, @RequestBody Task updatedTask){
 
         return service.GetTaskByID(id)
                 .map(task -> {
-                    task.setTitle(updatedTask.getTitle());
-                    task.setDescription(updatedTask.getDescription());
+                    if (!Objects.equals(updatedTask.getTitle(), "")){
+                        task.setTitle(updatedTask.getTitle());
+                    }
+
+                    if (!Objects.equals(updatedTask.getDescription(), "")){
+                        task.setDescription(updatedTask.getDescription());
+                    }
+
                     task.setCompleted(updatedTask.isCompleted());
                     return ResponseEntity.ok(service.Save(task));
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().<Task>build());
     }
 
     @PutMapping("/{id}/complete")

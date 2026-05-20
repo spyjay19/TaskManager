@@ -9,8 +9,17 @@
 
 <input type="text" id="taskInput" placeholder="Enter task name..." />
 <input type="text" id="descriptionInput" placeholder="Enter task description..."/>
+<label for="due-date">Select a Due Date:</label>
+<input type="date" id="due-date" name="task-due" value="2026-05-17">
 
 <button onclick="addTask()">Add Task</button>
+<div>
+    <select name="filters" id="filters" onchange="getTasks(document.getElementById('filters').value)">
+    <option value="all">All</option>
+    <option value="completed">Completed</option>
+    <option value="incomplete">Incomplete</option>
+</select>
+</div>
 
 <h2>Tasks</h2>
 <ul id="taskList"></ul>
@@ -18,9 +27,9 @@
 <script>
     const API_URL = "http://localhost:8080/tasks";
 
-    window.onload = getTasks;
+    window.onload = () => getTasks("all");
 
-    function getTasks() {
+    function getTasks(FilterType) {
         fetch(API_URL)
             .then(res => res.json())
             .then(data => {
@@ -30,15 +39,35 @@
                 data.forEach(task => {
                     const li = document.createElement("li");
 
+                    if (FilterType === "completed"){
+                        if (!task.completed){
+                            return;
+                        }
+                    }
+                    else if (FilterType === "incomplete"){
+                        if (task.completed){
+                            return;
+                        }
+                    }
+
                     li.innerHTML = `
                          <strong>${task.title}</strong>
-                         ${task.description}
                          <span style="color: ${task.completed ? 'green' : 'orange'}">
                          [${task.completed ? "Completed" : "Incomplete"}]
                          </span>
-                         <button onclick="completeTask(${task.id})">Complete</button>
-                         <button onclick="incompleteTask(${task.id})">Incomplete</button>
-                         <button style="color: red" onclick="confirmDelete(${task.id})">Delete</button>
+                         <div></div>
+                         ${task.description}
+                         <div></div>
+                         Created: ${new Date(task.createdAt).toLocaleString()}
+                         <div></div>
+                         Last updated: ${new Date(task.updatedAt).toLocaleString()}
+                         <div></div>
+                         <button id = "completeBtn" style="display: ${task.completed ? 'none' : 'inline'}" onclick="completeTask(${task.id})">Complete</button>
+                         <button id = "incompleteBtn" style="display: ${task.completed ? 'inline' : 'none'}" onclick="incompleteTask(${task.id})">Incomplete</button>
+                         <button style="color: red" onclick="confirmDelete(${task.id}, this)">Delete</button>
+                         <button onclick="editTask(${task.id}, this)">Edit</button>
+                         <div></div>
+                         <strong>Due Date: ${(task.dueDate)}</strong>
                         `;
 
                     list.appendChild(li);
@@ -48,7 +77,8 @@
 
     function addTask() {
         const input = document.getElementById("taskInput");
-        const descriptioninput = document.getElementById("descriptionInput");
+        const descriptionInput = document.getElementById("descriptionInput");
+        const dueDateInput = document.getElementById("due-date");
 
         fetch(API_URL, {
             method: "POST",
@@ -56,51 +86,141 @@
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                title: input.value + ":",
+                title: input.value,
                 completed: false,
-                description: descriptioninput.value
+                description: descriptionInput.value,
+                dueDate: dueDateInput.value
             })
         })
             .then(() => {
                 input.value = "";
-                descriptioninput.value = ""
-                getTasks();
+                descriptionInput.value = ""
+
+                const currentFilter = document.getElementById('filters').value;
+                getTasks(currentFilter);
             });
     }
 
     function deleteTask(id){
         fetch(`${API_URL}/${id}`, {
             method: "DELETE"
-        }).then(getTasks);
+        }).then(() => {
+            const currentFilter = document.getElementById('filters').value;
+            getTasks(currentFilter);
+        });
     }
 
-    let ConfirmButtonVisible = false;
+    function confirmDelete(id, button) {
+        const li = button.parentElement;
 
-    function confirmDelete(id) {
-        if (ConfirmButtonVisible){
-            return;
-        }
+        if (li.querySelector(".confirm-btn")) return;
 
-        const li = document.createElement("li");
+        const confirmBtn = document.createElement("button");
+        confirmBtn.textContent = "Confirm";
+        confirmBtn.style.color = "red";
+        confirmBtn.classList.add("confirm-btn");
 
-        li.innerHTML = `
-          <button onclick="deleteTask(${id})">Confirm</button>
-        `
+        const cancelBtn = document.createElement("button");
+        cancelBtn.textContent = "Cancel";
+        cancelBtn.style.color = "black";
+        cancelBtn.classList.add("cancel-btn");
 
-        document.body.appendChild(li);
-        ConfirmButtonVisible = true
+        const div = document.createElement("div")
+        div.appendChild(confirmBtn);
+        div.appendChild(cancelBtn)
+
+        confirmBtn.onclick = () => deleteTask(id);
+        cancelBtn.onclick = () => cancelDelete(div, confirmBtn, cancelBtn);
+
+        li.appendChild(div);
+    }
+
+    function cancelDelete(div, confirmBtn, cancelBtn){
+        div.removeChild(confirmBtn);
+        div.removeChild(cancelBtn)
     }
 
     function completeTask(id) {
         fetch(`${API_URL}/${id}/complete`, {
             method: "PUT"
-        }).then(getTasks);
-    }
+        }).then(() => {
+            const completeBtn = document.getElementById("completeBtn")
+            const incompleteBtn = document.getElementById("incompleteBtn")
 
-    function incompleteTask(id){
+            const currentFilter = document.getElementById('filters').value;
+            getTasks(currentFilter);
+    })}
+
+    function incompleteTask(id) {
         fetch(`${API_URL}/${id}/incomplete`, {
             method: "PUT"
-        }).then(getTasks)
+        }).then(() => {
+            const completeBtn = document.getElementById("completeBtn")
+            const incompleteBtn = document.getElementById("incompleteBtn")
+
+            const currentFilter = document.getElementById('filters').value;
+            getTasks(currentFilter);
+        })
+    }
+
+    function editTask(id, editButton) {
+        const li = editButton.parentElement;
+
+        const taskName = document.createElement("input");
+        taskName.placeholder = "Enter task name...";
+        taskName.classList.add("updatedTaskName-text");
+
+        const taskDescription = document.createElement("input");
+        taskDescription.placeholder = "Enter task description...";
+        taskDescription.classList.add("updatedTaskDescription-text");
+
+        const saveBtn = document.createElement("button");
+        saveBtn.textContent = "Save";
+        saveBtn.style.color = "green";
+        saveBtn.classList.add("save-btn");
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.textContent = "Cancel";
+        cancelBtn.style.color = "black";
+        cancelBtn.classList.add("cancel-btn");
+
+        const div = document.createElement("div")
+        div.appendChild(taskName);
+        div.appendChild(taskDescription)
+
+        li.appendChild(div);
+
+        const div2 = document.createElement("div")
+        div2.appendChild(saveBtn);
+        div2.appendChild(cancelBtn)
+
+        li.appendChild(div2);
+
+        saveBtn.onclick = () => {
+            const NewTitle = taskName.value
+
+            fetch(`${API_URL}/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    title: taskName.value,
+                    completed: false,
+                    description: taskDescription.value
+                })
+            })
+                .then(() => {
+                    const currentFilter = document.getElementById('filters').value;
+                    getTasks(currentFilter);
+                });
+        };
+
+        cancelBtn.onclick = () => {
+            li.removeChild(div);
+            li.removeChild(div2);
+        };
+
     }
 </script>
 

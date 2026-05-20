@@ -1,6 +1,8 @@
 package com.example.taskmanager.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -16,22 +18,23 @@ public class Task {
 
     private String description;
 
-    @JsonFormat(pattern = "MMM dd, yyyy hh:mm a")
     private LocalDateTime createdAt;
 
-    @JsonFormat(pattern = "MMM dd, yyyy hh:mm a")
     private LocalDateTime updatedAt;
+
+    private LocalDate dueDate;
 
     private boolean completed;
 
     public Task() {}
 
-    public Task(String title, String description) {
+    public Task(String title, String description, LocalDate dueDate) {
         this.title = title;
         this.description = description;
         this.completed = false;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.dueDate = dueDate;
     }
 
     @PrePersist
@@ -94,5 +97,13 @@ public class Task {
 
     public void setUpdatedAt(LocalDateTime time){
         this.updatedAt = time;
+    }
+
+    public LocalDate getDueDate(){
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate){
+        this.dueDate = dueDate;
     }
 }
