@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 40px;
+}
+
+h1 {
+    color: #333;
+}
+
+input,
+button,
+select {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+button {
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    line-height: 1.7;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.task-form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+}
+
+.filters {
+    margin-bottom: 20px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.task-card {
+    transition: 0.2s;
+}
+
+.task-card:hover {
+    transform: scale(1.01);
+}
