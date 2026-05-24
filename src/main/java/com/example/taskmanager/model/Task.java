@@ -1,17 +1,17 @@
 package com.example.taskmanager.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotBlank
     private String title;
@@ -26,14 +26,17 @@ public class Task {
 
     private boolean completed;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Task() {}
 
     public Task(String title, String description, LocalDate dueDate) {
         this.title = title;
         this.description = description;
         this.completed = false;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
         this.dueDate = dueDate;
     }
 
@@ -48,11 +51,11 @@ public class Task {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -62,7 +65,6 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public boolean isCompleted() {
@@ -71,7 +73,6 @@ public class Task {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public String getDescription(){
@@ -80,7 +81,6 @@ public class Task {
 
     public void setDescription(String description){
         this.description = description;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public LocalDateTime getCreatedAt(){
@@ -105,5 +105,13 @@ public class Task {
 
     public void setDueDate(LocalDate dueDate){
         this.dueDate = dueDate;
+    }
+
+    public User getUser(){
+        return user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 }

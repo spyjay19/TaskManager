@@ -2,107 +2,56 @@
 <html>
 <head>
     <title>Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<h1>Task Manager</h1>
+<div id="auth-section" class="auth-container">
 
-<input type="text" id="taskInput" placeholder="Enter task name..." />
-<input type="text" id="descriptionInput" placeholder="Enter task description..."/>
+<h2>Register</h2>
 
-<button onclick="addTask()">Add Task</button>
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
 
-<h2>Tasks</h2>
-<ul id="taskList"></ul>
+<button onclick="register()">Register</button>
 
-<script>
-    const API_URL = "http://localhost:8080/tasks";
+</div>
 
-    window.onload = getTasks;
+<div id="app-section" class="container">
+    <h1>Task Manager</h1>
 
-    function getTasks() {
-        fetch(API_URL)
-            .then(res => res.json())
-            .then(data => {
-                const list = document.getElementById("taskList");
-                list.innerHTML = "";
+    <div class="task-form">
+        <input type="text" id="taskInput" placeholder="Enter task name..."/>
+        <input type="text" id="descriptionInput" placeholder="Enter task description..."/>
 
-                data.forEach(task => {
-                    const li = document.createElement("li");
+        <label for="due-date">Select a Due Date:</label>
 
-                    li.innerHTML = `
-                         <strong>${task.title}</strong>
-                         ${task.description}
-                         <span style="color: ${task.completed ? 'green' : 'orange'}">
-                         [${task.completed ? "Completed" : "Incomplete"}]
-                         </span>
-                         <button onclick="completeTask(${task.id})">Complete</button>
-                         <button onclick="incompleteTask(${task.id})">Incomplete</button>
-                         <button style="color: red" onclick="confirmDelete(${task.id})">Delete</button>
-                        `;
+        <input type="date" id="due-date" name="task-due" value="2026-05-17">
 
-                    list.appendChild(li);
-                });
-            });
-    }
+        <button onclick="addTask()">Add Task</button>
+    </div>
 
-    function addTask() {
-        const input = document.getElementById("taskInput");
-        const descriptioninput = document.getElementById("descriptionInput");
+    <div class="filters">
+        <select name="filters" id="filters" onchange="getTasks(document.getElementById('filters').value)">
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="incomplete">Incomplete</option>
+        </select>
 
-        fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                title: input.value + ":",
-                completed: false,
-                description: descriptioninput.value
-            })
-        })
-            .then(() => {
-                input.value = "";
-                descriptioninput.value = ""
-                getTasks();
-            });
-    }
+        <select name="dueDateFilters" id="dueDateFilters"
+                onchange="getTasks(document.getElementById('dueDateFilters').value)">
+            <option value="all">All</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="today">Due Today</option>
+            <option value="overdue">Overdue</option>
+        </select>
+    </div>
 
-    function deleteTask(id){
-        fetch(`${API_URL}/${id}`, {
-            method: "DELETE"
-        }).then(getTasks);
-    }
+    <h2>Tasks</h2>
+    <ul id="taskList"></ul>
 
-    let ConfirmButtonVisible = false;
 
-    function confirmDelete(id) {
-        if (ConfirmButtonVisible){
-            return;
-        }
-
-        const li = document.createElement("li");
-
-        li.innerHTML = `
-          <button onclick="deleteTask(${id})">Confirm</button>
-        `
-
-        document.body.appendChild(li);
-        ConfirmButtonVisible = true
-    }
-
-    function completeTask(id) {
-        fetch(`${API_URL}/${id}/complete`, {
-            method: "PUT"
-        }).then(getTasks);
-    }
-
-    function incompleteTask(id){
-        fetch(`${API_URL}/${id}/incomplete`, {
-            method: "PUT"
-        }).then(getTasks)
-    }
-</script>
-
+    <script src="script.js"></script>
+</div>
 </body>
 </html>

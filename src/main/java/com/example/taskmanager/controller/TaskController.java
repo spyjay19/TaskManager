@@ -18,9 +18,14 @@ public class TaskController {
         this.service = service;
     }
 
-    @PostMapping("")
-    public Task AddTask(@Valid @RequestBody Task task){
-        return service.CreateTask(task);
+    @PostMapping("/user/{userId}")
+    public Task AddTask(@PathVariable Long userId, @RequestBody Task task){
+        return service.CreateTaskForUser(userId, task);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Task> getTasksByUser(@PathVariable Long userId){
+        return service.getTasksByUser(userId);
     }
 
     @GetMapping("")

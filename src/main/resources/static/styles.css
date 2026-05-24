@@ -62,3 +62,12 @@ button:hover {
 .task-card:hover {
     transform: scale(1.01);
 }
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    scale: 1.3;
+}

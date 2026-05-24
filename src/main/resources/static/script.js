@@ -1,7 +1,39 @@
-const API_URL = "http://localhost:8080/tasks";
+let USER_ID = null;
+const API_URL = `http://localhost:8080/tasks`;
 
-window.onload = () => getTasks();
+window.onload = () => {
+    document.getElementById("app-section").style.display = "none";
+}
 document.getElementById("due-date").value = new Date().toISOString().split("T")[0];
+
+function register(){
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    fetch("http://localhost:8080/users", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+
+        .then(res => res.json())
+        .then(data => {
+            USER_ID = data.id;
+
+            document.getElementById("auth-section").style.display = "none";
+
+            document.getElementById("app-section").style.display = "block";
+
+            getTasks();
+
+            console.log("Registered User: ", data);
+        })
+}
 
 function renderTasks(tasks) {
     const list = document.getElementById("taskList");
@@ -72,10 +104,10 @@ function applyFilters(task){
 }
 
 function getTasks() {
-    fetch(API_URL)
+    fetch(`${API_URL}/user/${USER_ID}`)
         .then(res => res.json())
         .then(data => {
-            const filteredTasks = data.filter(task => applyFilters(task))
+            const filteredTasks = data.filter(task => applyFilters(task));
 
             renderTasks(filteredTasks);
         });
@@ -86,7 +118,7 @@ function addTask() {
     const descriptionInput = document.getElementById("descriptionInput");
     const dueDateInput = document.getElementById("due-date");
 
-    fetch(API_URL, {
+    fetch(`${API_URL}/user/${USER_ID}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -103,7 +135,7 @@ function addTask() {
             descriptionInput.value = "";
 
             getTasks();
-        });
+        }).catch(err => console.error("CREATE ERROR:", err));
 }
 
 function deleteTask(id) {
