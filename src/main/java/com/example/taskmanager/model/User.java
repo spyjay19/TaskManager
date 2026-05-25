@@ -1,8 +1,11 @@
 package com.example.taskmanager.model;
 
+import com.example.taskmanager.repository.UserRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.Optional;
+
 import jakarta.persistence.Entity;
 
 @Entity
@@ -13,6 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
     private String password;
@@ -52,4 +56,5 @@ public class User {
     public void setId(Long Id){
         this.id = Id;
     }
+
 }

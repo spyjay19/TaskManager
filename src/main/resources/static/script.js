@@ -3,12 +3,24 @@ const API_URL = `http://localhost:8080/tasks`;
 
 window.onload = () => {
     document.getElementById("app-section").style.display = "none";
+    document.getElementById("sign-up-section").style.display = "none";
+    document.getElementById("log-in-section").style.display = "none";
 }
 document.getElementById("due-date").value = new Date().toISOString().split("T")[0];
 
-function register(){
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+function toSignUp(){
+    document.getElementById("auth-section").style.display = "none";
+    document.getElementById("sign-up-section").style.display = "flex";
+}
+
+function toLogIn(){
+    document.getElementById("auth-section").style.display = "none";
+    document.getElementById("log-in-section").style.display = "flex";
+}
+
+function signUp(){
+    const username = document.getElementById("newUsername").value;
+    const password = document.getElementById("newPassword").value;
 
     fetch("http://localhost:8080/users", {
         method: "POST",
@@ -25,13 +37,42 @@ function register(){
         .then(data => {
             USER_ID = data.id;
 
-            document.getElementById("auth-section").style.display = "none";
+            document.getElementById("sign-up-section").style.display = "none";
 
             document.getElementById("app-section").style.display = "block";
 
             getTasks();
 
             console.log("Registered User: ", data);
+        })
+}
+
+function logIn(){
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+
+    fetch(`http://localhost:8080/users/${username.value}`, {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json"
+      },
+    })
+
+        .then(res => res.json())
+        .then(data => {
+            if (data && username.value && password.value){
+
+                if (username.value === data.username && password.value === data.password){
+                    USER_ID = data.id;
+                    document.getElementById("WelcomeLabel").textContent = "Welcome back to the task manager: " + data.username + "!";
+
+                    document.getElementById("log-in-section").style.display = "none";
+
+                    document.getElementById("app-section").style.display = "block";
+
+                    getTasks();
+                }
+            }
         })
 }
 
@@ -253,5 +294,8 @@ function editTask(id, editButton) {
         li.removeChild(div);
         li.removeChild(div2);
     };
+}
 
+function darkMode(){
+    document.body.classList.toggle("dark-mode")
 }

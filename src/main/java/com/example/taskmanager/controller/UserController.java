@@ -20,4 +20,11 @@ public class UserController {
     public User createUser(@RequestBody User user){
         return userService.createUser(user);
     }
+
+    @GetMapping("/{username}")
+    public Optional<User> findUserByUsername(@PathVariable String username){
+        return userService.findUserByUsername(username);
+    }
+
+
 }

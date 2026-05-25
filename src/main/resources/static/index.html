@@ -8,17 +8,41 @@
 
 <div id="auth-section" class="auth-container">
 
-<h2>Register</h2>
+<h2>Log in or Sign up</h2>
 
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
+<button onclick="toSignUp()">Sign up</button>
+<button onclick="toLogIn()">Log in</button>
 
-<button onclick="register()">Register</button>
+</div>
+
+<div id="sign-up-section" class="sign-up-container">
+
+<h2>Sign up</h2>
+
+<input id="newUsername" placeholder="Username">
+<input id="newPassword" type="password" placeholder="Password">
+
+<button onclick="signUp()">Sign up</button>
+
+</div>
+
+<div id="log-in-section" class="log-in-container">
+
+    <h2>Log in</h2>
+
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="logIn()">Log in</button>
 
 </div>
 
 <div id="app-section" class="container">
     <h1>Task Manager</h1>
+
+    <div>
+        <h2 id="WelcomeLabel">Welcome back to the task manager {Insert Username}!</h2>
+    </div>
 
     <div class="task-form">
         <input type="text" id="taskInput" placeholder="Enter task name..."/>
@@ -49,6 +73,10 @@
 
     <h2>Tasks</h2>
     <ul id="taskList"></ul>
+
+    <div class="dark-mode">
+        <button onclick="darkMode()">Dark Mode</button>
+    </div>
 
 
     <script src="script.js"></script>
