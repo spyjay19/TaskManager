@@ -1,25 +1,27 @@
-let USER_ID = null;
+let USER_ID = localStorage.getItem("USER_ID");
 const API_URL = `http://localhost:8080/tasks`;
 
 window.onload = () => {
-    document.getElementById("app-section").style.display = "none";
-    document.getElementById("sign-up-section").style.display = "none";
-    document.getElementById("log-in-section").style.display = "none";
-}
-document.getElementById("due-date").value = new Date().toISOString().split("T")[0];
+    USER_ID = localStorage.getItem("USER_ID");
+    const username = localStorage.getItem("USERNAME");
+
+    if (!USER_ID || USER_ID === "null") {
+        window.location.href = "login.html";
+        return;
+    }
+
+    document.getElementById("WelcomeLabel").textContent = `Welcome back to the task manager: ${username}!`;
+    document.getElementById("due-date").value = new Date().toISOString().split("T")[0];
+
+    getTasks();
+};
 
 function toSignUp(){
-    const statusLabel = document.getElementById("statusLabel");
-    statusLabel.textContent = ""
-    document.getElementById("auth-section").style.display = "none";
-    document.getElementById("sign-up-section").style.display = "flex";
+    window.location.href = "register.html"
 }
 
 function toLogIn(){
-    const statusLabel = document.getElementById("statusLabel");
-    statusLabel.textContent = ""
-    document.getElementById("auth-section").style.display = "none";
-    document.getElementById("log-in-section").style.display = "flex";
+    window.location.href = "login.html"
 }
 
 function signUp(){
@@ -39,13 +41,10 @@ function signUp(){
 
         .then(res => res.json())
         .then(data => {
-            USER_ID = data.id;
+            localStorage.setItem("USER_ID", data.id)
+            localStorage.setItem("USERNAME", data.username);
 
-            document.getElementById("WelcomeLabel").textContent = "Welcome back to the task manager: " + data.username + "!";
-            document.getElementById("sign-up-section").style.display = "none";
-            document.getElementById("app-section").style.display = "block";
-
-            getTasks();
+            window.location.href = "app.html"
         })
 }
 
@@ -83,44 +82,10 @@ function logIn(){
             statusLabel.style.color = "green";
             statusLabel.textContent = "Log in successful!"
 
-            USER_ID = data.id;
-            document.getElementById("WelcomeLabel").textContent = "Welcome back to the task manager: " + data.username + "!";
+            localStorage.setItem("USER_ID", data.id);
+            localStorage.setItem("USERNAME", data.username);
 
-            document.getElementById("log-in-section").style.display = "none";
-
-            document.getElementById("app-section").style.display = "block";
-
-            getTasks();
-        })
-}
-
-
-function Oldlogin(){
-    const username = document.getElementById("username");
-    const password = document.getElementById("password");
-
-    fetch(`http://localhost:8080/users/${username.value}`, {
-      method: "GET",
-      headers: {
-          "Content-Type": "application/json"
-      },
-    })
-
-        .then(res => res.json())
-        .then(data => {
-            if (data && username.value && password.value){
-
-                if (username.value === data.username && password.value === data.password){
-                    USER_ID = data.id;
-                    document.getElementById("WelcomeLabel").textContent = "Welcome back to the task manager: " + data.username + "!";
-
-                    document.getElementById("log-in-section").style.display = "none";
-
-                    document.getElementById("app-section").style.display = "block";
-
-                    getTasks();
-                }
-            }
+            window.location.href = "app.html";
         })
 }
 
@@ -193,6 +158,13 @@ function applyFilters(task){
 }
 
 function getTasks() {
+    USER_ID = localStorage.getItem("USER_ID")
+
+    if (!USER_ID || USER_ID === "null"){
+        console.log("No user id found.");
+        return;
+    }
+
     fetch(`${API_URL}/user/${USER_ID}`)
         .then(res => res.json())
         .then(data => {
@@ -206,6 +178,7 @@ function addTask() {
     const input = document.getElementById("taskInput");
     const descriptionInput = document.getElementById("descriptionInput");
     const dueDateInput = document.getElementById("due-date");
+    USER_ID = localStorage.getItem("USER_ID")
 
     fetch(`${API_URL}/user/${USER_ID}`, {
         method: "POST",
@@ -354,8 +327,5 @@ function editTask(id, editButton) {
 function LogOut(){
     USER_ID = null;
 
-    document.getElementById("app-section").style.display = "none";
-    document.getElementById("sign-up-section").style.display = "none";
-    document.getElementById("log-in-section").style.display = "none";
-    document.getElementById("auth-section").style.display = "flex";
+    window.location.href = "index.html";
 }

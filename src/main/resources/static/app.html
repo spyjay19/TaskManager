@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app-section" class="container">
+    <h1>Task Manager</h1>
+
+    <div>
+        <h2 id="WelcomeLabel">Welcome back to the task manager {Insert Username}!</h2>
+    </div>
+
+    <div class="task-form">
+        <input type="text" id="taskInput" placeholder="Enter task name..."/>
+        <input type="text" id="descriptionInput" placeholder="Enter task description..."/>
+
+        <label for="due-date">Select a Due Date:</label>
+
+        <input type="date" id="due-date" name="task-due" value="2026-05-17">
+
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="filters">
+        <select name="filters" id="filters" onchange="getTasks(document.getElementById('filters').value)">
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="incomplete">Incomplete</option>
+        </select>
+
+        <select name="dueDateFilters" id="dueDateFilters"
+                onchange="getTasks(document.getElementById('dueDateFilters').value)">
+            <option value="all">All</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="today">Due Today</option>
+            <option value="overdue">Overdue</option>
+        </select>
+    </div>
+
+    <div class="log-out-container">
+        <button onclick="LogOut()">Log out</button>
+    </div>
+
+    <h2>Tasks</h2>
+    <ul id="taskList"></ul>
+
+    <script src="script.js"></script>
+</div>
+
+</body>
+</html>
