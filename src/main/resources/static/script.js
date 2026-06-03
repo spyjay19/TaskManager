@@ -9,11 +9,15 @@ window.onload = () => {
 document.getElementById("due-date").value = new Date().toISOString().split("T")[0];
 
 function toSignUp(){
+    const statusLabel = document.getElementById("statusLabel");
+    statusLabel.textContent = ""
     document.getElementById("auth-section").style.display = "none";
     document.getElementById("sign-up-section").style.display = "flex";
 }
 
 function toLogIn(){
+    const statusLabel = document.getElementById("statusLabel");
+    statusLabel.textContent = ""
     document.getElementById("auth-section").style.display = "none";
     document.getElementById("log-in-section").style.display = "flex";
 }
@@ -37,17 +41,61 @@ function signUp(){
         .then(data => {
             USER_ID = data.id;
 
+            document.getElementById("WelcomeLabel").textContent = "Welcome back to the task manager: " + data.username + "!";
             document.getElementById("sign-up-section").style.display = "none";
-
             document.getElementById("app-section").style.display = "block";
 
             getTasks();
-
-            console.log("Registered User: ", data);
         })
 }
 
 function logIn(){
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+
+    fetch(`http://localhost:8080/users/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
+    })
+
+        .then(async res => {
+            const statusLabel = document.getElementById("statusLabel");
+
+            if (res.status === 401){
+                statusLabel.style.color = "red";
+                statusLabel.textContent = "Incorrect password, try again."
+                return;
+            }
+            else if (res.status === 404){
+                statusLabel.style.color = "red";
+                statusLabel.textContent = "Incorrect username, try again."
+                return;
+            }
+
+            const data = await res.json();
+
+            statusLabel.style.color = "green";
+            statusLabel.textContent = "Log in successful!"
+
+            USER_ID = data.id;
+            document.getElementById("WelcomeLabel").textContent = "Welcome back to the task manager: " + data.username + "!";
+
+            document.getElementById("log-in-section").style.display = "none";
+
+            document.getElementById("app-section").style.display = "block";
+
+            getTasks();
+        })
+}
+
+
+function Oldlogin(){
     const username = document.getElementById("username");
     const password = document.getElementById("password");
 
@@ -274,6 +322,13 @@ function editTask(id, editButton) {
 
     saveBtn.onclick = () => {
         fetch(`${API_URL}/${id}`, {
+            method: "GET",
+        })
+            .then(() => {
+                console.log("Retrieved");
+            })
+
+        fetch(`${API_URL}/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -296,6 +351,11 @@ function editTask(id, editButton) {
     };
 }
 
-function darkMode(){
-    document.body.classList.toggle("dark-mode")
+function LogOut(){
+    USER_ID = null;
+
+    document.getElementById("app-section").style.display = "none";
+    document.getElementById("sign-up-section").style.display = "none";
+    document.getElementById("log-in-section").style.display = "none";
+    document.getElementById("auth-section").style.display = "flex";
 }

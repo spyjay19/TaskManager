@@ -1,7 +1,6 @@
 package com.example.taskmanager.controller;
 
 import com.example.taskmanager.model.Task;
-import jakarta.validation.Valid;
 import com.example.taskmanager.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,31 +11,32 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-    private final TaskService service;
+    private final TaskService taskService;
 
     public TaskController(TaskService service){
-        this.service = service;
+        this.taskService = service;
     }
 
     @PostMapping("/user/{userId}")
     public Task AddTask(@PathVariable Long userId, @RequestBody Task task){
-        return service.CreateTaskForUser(userId, task);
+        return taskService.CreateTaskForUser(userId, task);
     }
 
     @GetMapping("/user/{userId}")
     public List<Task> getTasksByUser(@PathVariable Long userId){
-        return service.getTasksByUser(userId);
+        return taskService.getTasksByUser(userId);
     }
 
     @GetMapping("")
     public List<Task> getTasks(){
-        return service.GetAllTasks();
+        return taskService.GetAllTasks();
     }
+
 
     @DeleteMapping("{id}")
     public ResponseEntity<Task> deleteTask(@PathVariable int id){
-        if (service.GetTaskByID(id).isPresent()){
-            service.DeleteTask(id);
+        if (taskService.GetTaskByID(id).isPresent()){
+            taskService.DeleteTask(id);
             return ResponseEntity.noContent().build();
         }
 
@@ -46,7 +46,7 @@ public class TaskController {
     @PutMapping("{id}")
     public ResponseEntity<Task> UpdateTask(@PathVariable int id, @RequestBody Task updatedTask){
 
-        return service.GetTaskByID(id)
+        return taskService.GetTaskByID(id)
                 .map(task -> {
                     if (!Objects.equals(updatedTask.getTitle(), "")){
                         task.setTitle(updatedTask.getTitle());
@@ -59,7 +59,7 @@ public class TaskController {
                     task.setDueDate(updatedTask.getDueDate());
 
                     task.setCompleted(updatedTask.isCompleted());
-                    return ResponseEntity.ok(service.Save(task));
+                    return ResponseEntity.ok(taskService.Save(task));
                 })
                 .orElse(ResponseEntity.notFound().<Task>build());
     }
@@ -67,10 +67,10 @@ public class TaskController {
     @PutMapping("/{id}/complete")
     public ResponseEntity<Task> markComplete(@PathVariable int id){
 
-        return service.GetTaskByID(id)
+        return taskService.GetTaskByID(id)
                 .map(task -> {
                     task.setCompleted(true);
-                    return ResponseEntity.ok(service.Save(task));
+                    return ResponseEntity.ok(taskService.Save(task));
                 })
 
                 .orElse(ResponseEntity.notFound().build());
@@ -79,10 +79,10 @@ public class TaskController {
     @PutMapping("/{id}/incomplete")
     public ResponseEntity<Task> markIncomplete(@PathVariable int id){
 
-        return service.GetTaskByID(id)
+        return taskService.GetTaskByID(id)
                 .map(task -> {
                     task.setCompleted(false);
-                    return ResponseEntity.ok(service.Save(task));
+                    return ResponseEntity.ok(taskService.Save(task));
                 })
 
                 .orElse(ResponseEntity.notFound().build());

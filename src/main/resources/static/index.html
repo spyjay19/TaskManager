@@ -8,7 +8,7 @@
 
 <div id="auth-section" class="auth-container">
 
-<h2>Log in or Sign up</h2>
+<h2>Sign up or Log in</h2>
 
 <button onclick="toSignUp()">Sign up</button>
 <button onclick="toLogIn()">Log in</button>
@@ -35,6 +35,7 @@
 
     <button onclick="logIn()">Log in</button>
 
+    <h3 id="statusLabel"></h3>
 </div>
 
 <div id="app-section" class="container">
@@ -71,12 +72,12 @@
         </select>
     </div>
 
+    <div class="log-out-container">
+        <button onclick="LogOut()">Log out</button>
+    </div>
+
     <h2>Tasks</h2>
     <ul id="taskList"></ul>
-
-    <div class="dark-mode">
-        <button onclick="darkMode()">Dark Mode</button>
-    </div>
 
 
     <script src="script.js"></script>
