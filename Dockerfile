@@ -7,8 +7,6 @@ COPY . .
 RUN chmod +x gradlew
 RUN ./gradlew clean bootJar -x test
 
-RUN JAR=$(ls build/libs/*.jar | head -n 1) && cp $JAR app.jar
-
 EXPOSE 8080
 
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "build/libs/TaskManager-0.0.1-SNAPSHOT.jar"]
