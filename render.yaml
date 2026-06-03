@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: taskmanager
+    env: java
+    buildCommand: ./gradlew clean build
+    startCommand: java -jar build/libs/*.jar
+    plan: free
