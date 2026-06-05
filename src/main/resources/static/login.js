@@ -2,7 +2,7 @@ function logIn(){
     const username = document.getElementById("username");
     const password = document.getElementById("password");
 
-    fetch(`http://localhost:8080/users/login`, {
+    fetch(`https://taskmanager-1-rt1r.onrender.com`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

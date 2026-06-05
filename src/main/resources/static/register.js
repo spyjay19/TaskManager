@@ -2,7 +2,7 @@ function signUp(){
     const username = document.getElementById("newUsername").value;
     const password = document.getElementById("newPassword").value;
 
-    fetch("http://localhost:8080/users", {
+    fetch("https://taskmanager-1-rt1r.onrender.com", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

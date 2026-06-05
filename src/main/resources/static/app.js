@@ -1,5 +1,5 @@
 let USER_ID = localStorage.getItem("USER_ID");
-const API_URL = `http://localhost:8080/tasks`;
+const API_URL = `https://taskmanager-1-rt1r.onrender.com`;
 
 window.onload = () => {
     USER_ID = localStorage.getItem("USER_ID");
