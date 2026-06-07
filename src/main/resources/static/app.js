@@ -1,5 +1,5 @@
 let USER_ID = localStorage.getItem("USER_ID");
-const API_URL = `https://taskmanager-1-rt1r.onrender.com`;
+const API_URL = `https://taskmanager-1-rt1r.onrender.com/tasks`;
 
 window.onload = () => {
     USER_ID = localStorage.getItem("USER_ID");
@@ -86,7 +86,7 @@ function applyFilters(task){
 
 function getTasks() {
     USER_ID = localStorage.getItem("USER_ID")
-    console.log("Get tasks called.")
+    console.log(USER_ID)
 
     if (!USER_ID || USER_ID === "null"){
         console.log("No user id found.");
@@ -254,6 +254,9 @@ function editTask(id, editButton) {
 
 function LogOut(){
     USER_ID = null;
+
+    localStorage.removeItem("USER_ID");
+    localStorage.removeItem("USERNAME");
 
     window.location.href = "index.html";
 }
