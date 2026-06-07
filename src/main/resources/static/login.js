@@ -32,6 +32,10 @@ function logIn(){
             statusLabel.style.color = "green";
             statusLabel.textContent = "Log in successful!"
 
+            console.log("LOGIN RESPONSE:", data);
+            console.log("DATA ID:", data.id);
+            console.log("DATA USERNAME:", data.username);
+
             localStorage.setItem("USER_ID", data.id);
             localStorage.setItem("USERNAME", data.username);
 
