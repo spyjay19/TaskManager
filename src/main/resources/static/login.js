@@ -39,6 +39,6 @@ function logIn(){
             localStorage.setItem("USER_ID", data.id);
             localStorage.setItem("USERNAME", data.username);
 
-            window.location.href = "app.html";
+            //window.location.href = "app.html";
         })
 }
