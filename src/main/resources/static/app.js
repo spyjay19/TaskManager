@@ -92,7 +92,7 @@ function getTasks() {
         return;
     }
 
-    fetch(`${API_URL}/user/${USER_ID}`)
+    fetch(`${API_URL}/tasks/user/${USER_ID}`)
         .then(res => res.json())
         .then(data => {
             const filteredTasks = data.filter(task => applyFilters(task));
@@ -107,7 +107,7 @@ function addTask() {
     const dueDateInput = document.getElementById("due-date");
     USER_ID = localStorage.getItem("USER_ID")
 
-    fetch(`${API_URL}/user/${USER_ID}`, {
+    fetch(`${API_URL}/tasks/user/${USER_ID}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -128,7 +128,7 @@ function addTask() {
 }
 
 function deleteTask(id) {
-    fetch(`${API_URL}/${id}`, {
+    fetch(`${API_URL}/tasks/${id}`, {
         method: "DELETE"
     }).then(() => {
         getTasks();
@@ -166,7 +166,7 @@ function cancelDelete(div, confirmBtn, cancelBtn) {
 }
 
 function completeTask(id) {
-    fetch(`${API_URL}/${id}/complete`, {
+    fetch(`${API_URL}/tasks/${id}/complete`, {
         method: "PUT"
     }).then(() => {
         getTasks();
@@ -174,7 +174,7 @@ function completeTask(id) {
 }
 
 function incompleteTask(id) {
-    fetch(`${API_URL}/${id}/incomplete`, {
+    fetch(`${API_URL}/tasks/${id}/incomplete`, {
         method: "PUT"
     }).then(() => {
         getTasks();
@@ -221,7 +221,7 @@ function editTask(id, editButton) {
     li.appendChild(div2);
 
     saveBtn.onclick = () => {
-        fetch(`${API_URL}/${id}`, {
+        fetch(`${API_URL}/tasks/${id}`, {
             method: "GET",
         })
             .then(() => {
