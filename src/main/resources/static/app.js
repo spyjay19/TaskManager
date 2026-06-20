@@ -228,7 +228,7 @@ function editTask(id, editButton) {
                 console.log("Retrieved");
             })
 
-        fetch(`${API_URL}/${id}`, {
+        fetch(`${API_URL}/tasks/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
