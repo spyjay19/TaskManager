@@ -86,7 +86,8 @@ function applyFilters(task){
 
 function getTasks() {
     USER_ID = localStorage.getItem("USER_ID")
-    console.log(USER_ID)
+
+    console.log(USER_ID, "App")
 
     if (!USER_ID || USER_ID === "null"){
         console.log("No user id found.");

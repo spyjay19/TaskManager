@@ -2,7 +2,6 @@ function logIn(){
     const username = document.getElementById("username");
     const password = document.getElementById("password");
 
-    console.log(username.value)
 
     fetch(`https://taskmanager-1-rt1r.onrender.com/users/login`, {
         method: "POST",
@@ -31,16 +30,14 @@ function logIn(){
 
             const data = await res.json();
 
+            console.log(data.username, "login test")
+
             statusLabel.style.color = "green";
             statusLabel.textContent = "Log in successful!"
-
-            console.log("LOGIN RESPONSE:", data);
-            console.log("DATA ID:", data.id);
-            console.log("DATA USERNAME:", data.username);
 
             localStorage.setItem("USER_ID", data.id);
             localStorage.setItem("USERNAME", data.username);
 
-            //window.location.href = "app.html";
+            window.location.href = "app.html";
         })
 }
