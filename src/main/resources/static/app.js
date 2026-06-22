@@ -49,8 +49,8 @@ function createTaskElement(task) {
                          <div></div>
                          <button id = "completeBtn" style="display: ${task.completed ? 'none' : 'inline'}" onclick="completeTask(${task.id})">Complete</button>
                          <button id = "incompleteBtn" style="display: ${task.completed ? 'inline' : 'none'}" onclick="incompleteTask(${task.id})">Incomplete</button>
-                         <button style="background-color: red" onclick="confirmDelete(${task.id}, this)">Delete</button>
-                         <button style="background-color: yellow" onclick="editTask(${task.id}, this)">Edit</button>
+                         <button style="color: red" onclick="confirmDelete(${task.id}, this)">Delete</button>
+                         <button onclick="editTask(${task.id}, this)">Edit</button>
                          <div></div>
                          <strong>Due Date: ${(task.dueDate)}</strong>
                         `;
